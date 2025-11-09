@@ -229,3 +229,52 @@ class BookingController:
         return (
             booking.status in reschedulable_statuses and booking.date_time > time_buffer
         )
+
+    # mark booking as completed (customer only, after scheduled time)
+    @staticmethod
+    def mark_booking_completed(
+        db: Session,
+        booking_id: str,
+        customer_id: str,
+    ) -> Booking:
+        booking = BookingController.get_booking(db, booking_id)
+
+        # verify if customer owns this booking
+        if str(booking.customer_id) != customer_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You can only complete your own bookings",
+            )
+
+        # check if booking is in accepted status
+        if booking.status != BookingStatus.ACCEPTED:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Can only mark accepted bookings as completed. Current status: {booking.status}",
+            )
+
+        # check if scheduled time has passed
+        if booking.date_time > datetime.now(timezone.utc):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cannot mark booking as completed before the scheduled time",
+            )
+
+        # update booking status
+        booking.status = BookingStatus.COMPLETED
+        db.commit()
+        db.refresh(booking)
+
+        # Notify provider about completion
+        try:
+            provider_user = booking.provider.user
+            asyncio.create_task(
+                notification_service.send_sms(
+                    provider_user.phone,
+                    f"Booking marked as completed by customer. Service: {booking.service_type}",
+                )
+            )
+        except Exception as e:
+            print(f"Notification failed: {e}")
+
+        return booking

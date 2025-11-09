@@ -291,3 +291,32 @@ async def provider_cancel_booking(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to cancel booking: {str(e)}",
         )
+
+
+# mark booking as completed by customer
+@router.post("/{booking_id}/complete", response_model=dict)
+async def complete_booking(
+    booking_id: str,
+    current_user: User = Depends(get_current_customer),
+    db: Session = Depends(get_db),
+):
+    try:
+        booking = BookingController.mark_booking_completed(
+            db=db,
+            booking_id=booking_id,
+            customer_id=str(current_user.id),
+        )
+
+        return {
+            "message": "Booking marked as completed successfully",
+            "booking_id": str(booking.booking_id),
+            "status": booking.status,
+        }
+
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to complete booking: {str(e)}",
+        )
