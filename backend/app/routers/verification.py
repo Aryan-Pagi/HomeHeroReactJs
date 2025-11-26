@@ -12,10 +12,11 @@ from app.schemas.verification import (
     DocumentUpload,
 )
 from app.services.document_verification import DocumentVerificationService
-from app.services.file_upload import file_upload_service
+from app.services.file_upload import FileUploadService
 from datetime import datetime
 
 router = APIRouter()
+file_upload_service = FileUploadService()
 
 
 @router.post("/submit", response_model=ProviderVerificationResponse)
