@@ -10,7 +10,7 @@ from app.core.database import engine, Base
 from app.core.logging import setup_logging, LoggerMiddleware, get_logger
 from app.core.exceptions import global_exception_handler
 from app.core.rate_limiter import limiter, rate_limit_exceeded_handler
-from app.routers import auth, users, providers, services, bookings, reviews, admin, verification
+from app.routers import auth, users, providers, services, bookings, reviews, admin, verification, notifications, payments
 from slowapi.errors import RateLimitExceeded
 
 # setup logging
@@ -83,6 +83,8 @@ app.include_router(bookings.router, prefix="/api/bookings", tags=["Bookings"])
 app.include_router(reviews.router, prefix="/api/reviews", tags=["Reviews"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(verification.router, prefix="/api/verification", tags=["Verification"])
+app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
+app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 
 
 @app.get("/", response_model=dict)
