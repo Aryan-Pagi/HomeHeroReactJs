@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Star, Loader, AlertCircle, CheckCircle, ArrowLeft } from "lucide-react";
+import {
+  Star,
+  Loader,
+  AlertCircle,
+  CheckCircle,
+  ArrowLeft,
+} from "lucide-react";
 import { reviewAPI, bookingAPI } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { validators } from "../utils/validation";
 
 function SubmitReview() {
   const { bookingId } = useParams();
@@ -35,12 +42,12 @@ function SubmitReview() {
     try {
       setLoading(true);
       const data = await bookingAPI.getBooking(bookingId);
-      
+
       // Check if booking is completed
       if (data.status !== "completed") {
         setError("You can only review completed bookings");
       }
-      
+
       setBooking(data);
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to load booking details");
@@ -52,13 +59,17 @@ function SubmitReview() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (reviewData.rating === 0) {
-      setError("Please select a rating");
+    // Validate rating
+    const ratingValidation = validators.rating(reviewData.rating);
+    if (!ratingValidation.isValid) {
+      setError(ratingValidation.message);
       return;
     }
 
-    if (!reviewData.comment.trim()) {
-      setError("Please write a review comment");
+    // Validate comment
+    const commentValidation = validators.reviewComment(reviewData.comment);
+    if (!commentValidation.isValid) {
+      setError(commentValidation.message);
       return;
     }
 
@@ -69,12 +80,12 @@ function SubmitReview() {
       await reviewAPI.submitReview({
         booking_id: parseInt(bookingId),
         provider_id: booking.provider_id,
-        rating: reviewData.rating,
-        comment: reviewData.comment,
+        rating: ratingValidation.sanitized,
+        comment: commentValidation.sanitized,
       });
 
       setSuccess(true);
-      
+
       // Redirect after 2 seconds
       setTimeout(() => {
         navigate(`/provider/${booking.provider_id}`);
@@ -82,7 +93,7 @@ function SubmitReview() {
     } catch (err) {
       setError(
         err.response?.data?.detail ||
-        "Failed to submit review. You may have already reviewed this booking."
+          "Failed to submit review. You may have already reviewed this booking."
       );
     } finally {
       setSubmitting(false);
@@ -129,7 +140,7 @@ function SubmitReview() {
         </button>
 
         <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-10 border border-gray-100">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
             Submit Review
           </h1>
           <p className="text-gray-600 mb-8">
@@ -140,7 +151,8 @@ function SubmitReview() {
           <div className="bg-cyan-50 rounded-xl p-6 mb-8 border border-cyan-100">
             <h3 className="font-bold text-gray-900 mb-2">Booking Details</h3>
             <p className="text-gray-700">
-              <span className="font-medium">Service:</span> {booking?.service_type}
+              <span className="font-medium">Service:</span>{" "}
+              {booking?.service_type}
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Date:</span>{" "}
@@ -179,7 +191,9 @@ function SubmitReview() {
                   <button
                     key={star}
                     type="button"
-                    onClick={() => setReviewData({ ...reviewData, rating: star })}
+                    onClick={() =>
+                      setReviewData({ ...reviewData, rating: star })
+                    }
                     onMouseEnter={() => setHoveredRating(star)}
                     onMouseLeave={() => setHoveredRating(0)}
                     className="focus:outline-none transition-transform hover:scale-110"
@@ -194,7 +208,9 @@ function SubmitReview() {
                   </button>
                 ))}
                 <span className="ml-3 text-lg font-semibold text-gray-700">
-                  {reviewData.rating > 0 ? `${reviewData.rating} / 5` : "Select rating"}
+                  {reviewData.rating > 0
+                    ? `${reviewData.rating} / 5`
+                    : "Select rating"}
                 </span>
               </div>
             </div>
@@ -231,7 +247,7 @@ function SubmitReview() {
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white py-3.5 rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 bg-linear-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white py-3.5 rounded-xl font-bold transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={submitting || success}
               >
                 {submitting ? (
@@ -252,3 +268,4 @@ function SubmitReview() {
 }
 
 export default SubmitReview;
+

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { bookingAPI } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { BookingCardSkeleton } from "../components/SkeletonLoader";
 
 function MyBookings() {
   const navigate = useNavigate();
@@ -44,7 +45,10 @@ function MyBookings() {
 
   const canCancelBooking = (booking) => {
     if (booking.status !== "pending" && booking.status !== "accepted") {
-      return { canCancel: false, reason: "Can only cancel pending or accepted bookings" };
+      return {
+        canCancel: false,
+        reason: "Can only cancel pending or accepted bookings",
+      };
     }
 
     const bookingDate = new Date(booking.date_time);
@@ -70,7 +74,7 @@ function MyBookings() {
     // Booking scheduled time must have passed
     const bookingDate = new Date(booking.date_time);
     const now = new Date();
-    
+
     return now >= bookingDate;
   };
 
@@ -94,7 +98,11 @@ function MyBookings() {
   };
 
   const handleMarkAsCompleted = async (bookingId) => {
-    if (!window.confirm("Are you sure you want to mark this booking as completed?")) {
+    if (
+      !window.confirm(
+        "Are you sure you want to mark this booking as completed?"
+      )
+    ) {
       return;
     }
 
@@ -106,7 +114,9 @@ function MyBookings() {
       alert("Booking marked as completed successfully!");
     } catch (err) {
       console.error("Error completing booking:", err);
-      alert(err.response?.data?.detail || "Failed to mark booking as completed");
+      alert(
+        err.response?.data?.detail || "Failed to mark booking as completed"
+      );
     } finally {
       setCompletingId(null);
     }
@@ -123,7 +133,9 @@ function MyBookings() {
       case "completed":
         return bookings.filter((b) => b.status === "completed");
       case "cancelled":
-        return bookings.filter((b) => b.status === "cancelled" || b.status === "declined");
+        return bookings.filter(
+          (b) => b.status === "cancelled" || b.status === "declined"
+        );
       case "upcoming":
         return bookings.filter(
           (b) =>
@@ -133,7 +145,9 @@ function MyBookings() {
       case "past":
         return bookings.filter(
           (b) =>
-            (b.status === "completed" || b.status === "cancelled" || b.status === "declined") ||
+            b.status === "completed" ||
+            b.status === "cancelled" ||
+            b.status === "declined" ||
             new Date(b.date_time) < now
         );
       default:
@@ -201,10 +215,17 @@ function MyBookings() {
 
   if (loading) {
     return (
-      <div className="min-h-screen py-12 px-4 flex items-center justify-center">
-        <div className="text-center">
-          <Loader className="h-12 w-12 text-cyan-500 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading your bookings...</p>
+      <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-10">
+            <div className="h-10 bg-gray-200 rounded w-1/3 mb-3 animate-pulse"></div>
+            <div className="h-6 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          </div>
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <BookingCardSkeleton key={i} />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -217,7 +238,7 @@ function MyBookings() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-3">
+          <h1 className="text-4xl font-bold bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-3">
             My Bookings
           </h1>
           <p className="text-lg text-gray-600 mb-6">
@@ -241,7 +262,7 @@ function MyBookings() {
                 onClick={() => setFilter(tab.key)}
                 className={`px-4 py-2 rounded-lg font-semibold transition-all text-sm ${
                   filter === tab.key
-                    ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
+                    ? "bg-linear-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
                     : "bg-white text-gray-700 border-2 border-gray-200 hover:border-cyan-300"
                 }`}
               >
@@ -266,7 +287,7 @@ function MyBookings() {
               <p className="text-gray-500 text-lg">No bookings found</p>
               <button
                 onClick={() => navigate("/")}
-                className="mt-4 bg-gradient-to-r from-cyan-500 to-cyan-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:from-cyan-600 hover:to-cyan-700 transition-all"
+                className="mt-4 bg-linear-to-r from-cyan-500 to-cyan-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:from-cyan-600 hover:to-cyan-700 transition-all"
               >
                 Browse Service Providers
               </button>
@@ -297,7 +318,9 @@ function MyBookings() {
                       <div className="flex items-center gap-3">
                         <Calendar className="h-5 w-5 text-cyan-500" />
                         <div>
-                          <p className="text-xs text-gray-500">Scheduled Date</p>
+                          <p className="text-xs text-gray-500">
+                            Scheduled Date
+                          </p>
                           <p className="font-semibold text-gray-900">
                             {formatDate(booking.date_time)}
                           </p>
@@ -307,7 +330,9 @@ function MyBookings() {
                       <div className="flex items-center gap-3">
                         <Clock className="h-5 w-5 text-cyan-500" />
                         <div>
-                          <p className="text-xs text-gray-500">Scheduled Time</p>
+                          <p className="text-xs text-gray-500">
+                            Scheduled Time
+                          </p>
                           <p className="font-semibold text-gray-900">
                             {formatTime(booking.date_time)}
                           </p>
@@ -373,7 +398,9 @@ function MyBookings() {
 
                         {canMarkAsCompleted(booking) && (
                           <button
-                            onClick={() => handleMarkAsCompleted(booking.booking_id)}
+                            onClick={() =>
+                              handleMarkAsCompleted(booking.booking_id)
+                            }
                             disabled={completingId === booking.booking_id}
                             className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                           >
@@ -393,8 +420,10 @@ function MyBookings() {
 
                         {booking.status === "completed" && (
                           <button
-                            onClick={() => navigate(`/review/${booking.booking_id}`)}
-                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all"
+                            onClick={() =>
+                              navigate(`/review/${booking.booking_id}`)
+                            }
+                            className="flex items-center gap-2 px-4 py-2 bg-linear-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white rounded-lg font-semibold transition-all"
                           >
                             Write Review
                           </button>
@@ -413,3 +442,4 @@ function MyBookings() {
 }
 
 export default MyBookings;
+

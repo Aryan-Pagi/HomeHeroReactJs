@@ -63,7 +63,7 @@ function ProviderVerification() {
     try {
       const status = await verificationAPI.getStatus();
       setVerificationStatus(status);
-      
+
       if (status.verification_status === "approved") {
         // Already approved, redirect to dashboard
         navigate("/provider-dashboard");
@@ -74,7 +74,9 @@ function ProviderVerification() {
       if (err.status === 404) {
         console.log("Verification endpoint not available yet, showing form");
       } else {
-        setError("Failed to check verification status. Please continue with the form.");
+        setError(
+          "Failed to check verification status. Please continue with the form."
+        );
       }
     }
   };
@@ -98,7 +100,12 @@ function ProviderVerification() {
       return;
     }
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "application/pdf",
+    ];
     if (!allowedTypes.includes(file.type)) {
       setError("Only JPG, PNG, or PDF files are allowed");
       return;
@@ -127,12 +134,14 @@ function ProviderVerification() {
       alert(`${documentType} uploaded successfully!`);
     } catch (err) {
       console.error("Upload error:", err);
-      
+
       // Handle 404 - endpoint not deployed yet
       if (err.status === 404) {
         // For demo purposes, create a mock upload URL
-        const mockUrl = `https://storage.homehero.com/documents/${documentType}/${Date.now()}_${file.name}`;
-        
+        const mockUrl = `https://storage.homehero.com/documents/${documentType}/${Date.now()}_${
+          file.name
+        }`;
+
         setUploadedDocuments((prev) => ({
           ...prev,
           [documentType]: {
@@ -140,7 +149,7 @@ function ProviderVerification() {
             filename: file.name,
           },
         }));
-        
+
         alert(`${documentType} uploaded successfully (demo mode)!`);
       } else {
         setError(err.detail || "Failed to upload document");
@@ -181,7 +190,9 @@ function ProviderVerification() {
         documents: documents,
       };
 
-      const response = await verificationAPI.submitVerification(verificationData);
+      const response = await verificationAPI.submitVerification(
+        verificationData
+      );
 
       setSuccess(true);
       setVerificationStatus({
@@ -200,10 +211,12 @@ function ProviderVerification() {
       }, 2000);
     } catch (err) {
       console.error("Verification error:", err);
-      
+
       // Handle 404 - endpoint not deployed yet
       if (err.status === 404) {
-        setError("Verification system is being updated. Please try again later or contact support.");
+        setError(
+          "Verification system is being updated. Please try again later or contact support."
+        );
       } else {
         setError(err.detail || "Failed to submit verification");
       }
@@ -365,7 +378,8 @@ function ProviderVerification() {
         Document Verification
       </h3>
       <p className="text-gray-600 mb-6">
-        Upload clear images or PDFs of your documents. All documents are securely encrypted.
+        Upload clear images or PDFs of your documents. All documents are
+        securely encrypted.
       </p>
 
       {/* ID Proof */}
@@ -386,7 +400,9 @@ function ProviderVerification() {
         {uploadedDocuments.id_proof && (
           <div className="mt-2 flex items-center gap-2 text-green-600">
             <CheckCircle className="h-4 w-4" />
-            <span className="text-sm">{uploadedDocuments.id_proof.filename}</span>
+            <span className="text-sm">
+              {uploadedDocuments.id_proof.filename}
+            </span>
           </div>
         )}
       </div>
@@ -409,7 +425,9 @@ function ProviderVerification() {
         {uploadedDocuments.address_proof && (
           <div className="mt-2 flex items-center gap-2 text-green-600">
             <CheckCircle className="h-4 w-4" />
-            <span className="text-sm">{uploadedDocuments.address_proof.filename}</span>
+            <span className="text-sm">
+              {uploadedDocuments.address_proof.filename}
+            </span>
           </div>
         )}
       </div>
@@ -426,13 +444,17 @@ function ProviderVerification() {
         <input
           type="file"
           accept=".jpg,.jpeg,.png,.pdf"
-          onChange={(e) => handleFileUpload("work_certificate", e.target.files[0])}
+          onChange={(e) =>
+            handleFileUpload("work_certificate", e.target.files[0])
+          }
           className="w-full"
         />
         {uploadedDocuments.work_certificate && (
           <div className="mt-2 flex items-center gap-2 text-green-600">
             <CheckCircle className="h-4 w-4" />
-            <span className="text-sm">{uploadedDocuments.work_certificate.filename}</span>
+            <span className="text-sm">
+              {uploadedDocuments.work_certificate.filename}
+            </span>
           </div>
         )}
       </div>
@@ -455,7 +477,9 @@ function ProviderVerification() {
         {uploadedDocuments.license && (
           <div className="mt-2 flex items-center gap-2 text-green-600">
             <CheckCircle className="h-4 w-4" />
-            <span className="text-sm">{uploadedDocuments.license.filename}</span>
+            <span className="text-sm">
+              {uploadedDocuments.license.filename}
+            </span>
           </div>
         )}
       </div>
@@ -484,13 +508,20 @@ function ProviderVerification() {
         </div>
 
         <div>
-          <h4 className="font-semibold text-gray-700 mb-2">Documents Uploaded</h4>
+          <h4 className="font-semibold text-gray-700 mb-2">
+            Documents Uploaded
+          </h4>
           <ul className="space-y-1">
             {Object.entries(uploadedDocuments).map(([type, doc]) =>
               doc ? (
-                <li key={type} className="flex items-center gap-2 text-green-600">
+                <li
+                  key={type}
+                  className="flex items-center gap-2 text-green-600"
+                >
                   <CheckCircle className="h-4 w-4" />
-                  <span className="text-sm capitalize">{type.replace("_", " ")}</span>
+                  <span className="text-sm capitalize">
+                    {type.replace("_", " ")}
+                  </span>
                 </li>
               ) : null
             )}
@@ -501,8 +532,8 @@ function ProviderVerification() {
       <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-4">
         <p className="text-sm text-blue-800">
           <Shield className="inline h-4 w-4 mr-2" />
-          Your documents will be verified automatically. If approved, you'll receive
-          instant access to start receiving bookings!
+          Your documents will be verified automatically. If approved, you'll
+          receive instant access to start receiving bookings!
         </p>
       </div>
     </div>
@@ -543,7 +574,7 @@ function ProviderVerification() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cyan-50 to-white py-12 px-4">
+    <div className="min-h-screen bg-linear-to-b from-cyan-50 to-white py-12 px-4">
       <div className="max-w-4xl mx-auto">
         {/* Progress Bar */}
         <div className="mb-8">
@@ -648,3 +679,4 @@ function ProviderVerification() {
 }
 
 export default ProviderVerification;
+

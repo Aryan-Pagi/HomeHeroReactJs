@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { bookingAPI, reviewAPI, providerAPI } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import { StatsCardSkeleton, BookingCardSkeleton } from "../components/SkeletonLoader";
 
 function ProviderDashboard() {
   const { user } = useAuth();
@@ -41,7 +42,7 @@ function ProviderDashboard() {
     try {
       setLoading(true);
       setError("");
-      
+
       // Fetch bookings - try to get all provider bookings
       let bookingsData = [];
       try {
@@ -50,7 +51,7 @@ function ProviderDashboard() {
         console.error("Failed to fetch bookings:", err);
         bookingsData = [];
       }
-      
+
       // Fetch reviews
       let reviewsData = [];
       try {
@@ -59,7 +60,7 @@ function ProviderDashboard() {
         console.error("Failed to fetch reviews:", err);
         reviewsData = [];
       }
-      
+
       setBookings(bookingsData || []);
       setReviews(reviewsData || []);
     } catch (err) {
@@ -73,24 +74,30 @@ function ProviderDashboard() {
   const handleRespondToBooking = async (bookingId, action) => {
     // action will be "accept" or "decline"
     const actionLabel = action === "accept" ? "accept" : "decline";
-    
-    if (!window.confirm(`Are you sure you want to ${actionLabel} this booking?`)) {
+
+    if (
+      !window.confirm(`Are you sure you want to ${actionLabel} this booking?`)
+    ) {
       return;
     }
 
     try {
       setRespondingId(bookingId);
-      
+
       // Convert "accept" to "accepted" and "decline" to "declined" for the API
       const status = action === "accept" ? "accepted" : "declined";
-      
+
       await bookingAPI.respondToBooking(bookingId, status);
       await fetchData();
-      
+
       alert(`Booking ${actionLabel}ed successfully!`);
     } catch (err) {
       console.error(`Failed to ${actionLabel} booking:`, err);
-      alert(`Failed to ${actionLabel} booking: ${err.response?.data?.detail || err.message}`);
+      alert(
+        `Failed to ${actionLabel} booking: ${
+          err.response?.data?.detail || err.message
+        }`
+      );
     } finally {
       setRespondingId(null);
     }
@@ -100,15 +107,18 @@ function ProviderDashboard() {
     try {
       setUpdatingStatus(true);
       const newStatus = !isOnline;
-      
+
       // Update availability in backend - expects { available: boolean }
       await providerAPI.updateAvailability(newStatus);
-      
+
       setIsOnline(newStatus);
-      alert(`You are now ${newStatus ? 'ONLINE' : 'OFFLINE'}`);
+      alert(`You are now ${newStatus ? "ONLINE" : "OFFLINE"}`);
     } catch (err) {
       console.error("Failed to update status:", err);
-      alert("Failed to update status: " + (err.response?.data?.detail || err.message));
+      alert(
+        "Failed to update status: " +
+          (err.response?.data?.detail || err.message)
+      );
     } finally {
       setUpdatingStatus(false);
     }
@@ -151,16 +161,48 @@ function ProviderDashboard() {
     pending: bookings.filter((b) => b.status === "pending").length,
     accepted: bookings.filter((b) => b.status === "accepted").length,
     completed: bookings.filter((b) => b.status === "completed").length,
-    avgRating: reviews.length > 0
-      ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-      : "N/A",
+    avgRating:
+      reviews.length > 0
+        ? (
+            reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          ).toFixed(1)
+        : "N/A",
     totalReviews: reviews.length,
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader className="h-12 w-12 text-cyan-600 animate-spin" />
+      <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Skeleton */}
+          <div className="mb-8">
+            <div className="h-10 bg-gray-200 rounded w-1/3 mb-2 animate-pulse"></div>
+            <div className="h-6 bg-gray-200 rounded w-1/4 animate-pulse"></div>
+          </div>
+          
+          {/* Stats Grid Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[1, 2, 3, 4].map((i) => (
+              <StatsCardSkeleton key={i} />
+            ))}
+          </div>
+          
+          {/* Bookings Skeleton */}
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-6 animate-pulse">
+            <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+            <div className="flex flex-wrap gap-3 mb-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-10 bg-gray-200 rounded-lg w-32"></div>
+              ))}
+            </div>
+          </div>
+          
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <BookingCardSkeleton key={i} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -171,12 +213,12 @@ function ProviderDashboard() {
         {/* Header with Online/Offline Toggle */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-4xl font-bold bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-2">
               Provider Dashboard
             </h1>
             <p className="text-gray-600">Welcome back, {user?.name}!</p>
           </div>
-          
+
           {/* Online/Offline Toggle */}
           <div className="flex items-center gap-4">
             <span className="text-sm font-medium text-gray-600">
@@ -187,8 +229,8 @@ function ProviderDashboard() {
               disabled={updatingStatus}
               className={`relative inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed ${
                 isOnline
-                  ? "bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
-                  : "bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white"
+                  ? "bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white"
+                  : "bg-linear-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white"
               }`}
             >
               {updatingStatus ? (
@@ -220,18 +262,27 @@ function ProviderDashboard() {
           <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3">
             <CheckCircle className="h-6 w-6 text-green-600" />
             <div>
-              <p className="text-green-800 font-semibold">You are currently ONLINE</p>
-              <p className="text-green-700 text-sm">Customers can see and book your services</p>
+              <p className="text-green-800 font-semibold">
+                You are currently ONLINE
+              </p>
+              <p className="text-green-700 text-sm">
+                Customers can see and book your services
+              </p>
             </div>
           </div>
         )}
-        
+
         {!isOnline && (
           <div className="mb-6 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl flex items-center gap-3">
             <PowerOff className="h-6 w-6 text-gray-600" />
             <div>
-              <p className="text-gray-800 font-semibold">You are currently OFFLINE</p>
-              <p className="text-gray-700 text-sm">Customers cannot see or book your services. Go online to start receiving bookings.</p>
+              <p className="text-gray-800 font-semibold">
+                You are currently OFFLINE
+              </p>
+              <p className="text-gray-700 text-sm">
+                Customers cannot see or book your services. Go online to start
+                receiving bookings.
+              </p>
             </div>
           </div>
         )}
@@ -259,7 +310,9 @@ function ProviderDashboard() {
               <h3 className="text-gray-600 font-medium">Completed</h3>
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <p className="text-3xl font-bold text-gray-900">{stats.completed}</p>
+            <p className="text-3xl font-bold text-gray-900">
+              {stats.completed}
+            </p>
           </div>
 
           <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
@@ -267,8 +320,12 @@ function ProviderDashboard() {
               <h3 className="text-gray-600 font-medium">Avg Rating</h3>
               <Star className="h-8 w-8 text-yellow-500" />
             </div>
-            <p className="text-3xl font-bold text-gray-900">{stats.avgRating}</p>
-            <p className="text-sm text-gray-500">{stats.totalReviews} reviews</p>
+            <p className="text-3xl font-bold text-gray-900">
+              {stats.avgRating}
+            </p>
+            <p className="text-sm text-gray-500">
+              {stats.totalReviews} reviews
+            </p>
           </div>
         </div>
 
@@ -281,7 +338,9 @@ function ProviderDashboard() {
 
         {/* Filters */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Booking Requests</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            Booking Requests
+          </h2>
           <div className="flex flex-wrap gap-3">
             {[
               { key: "all", label: "All Bookings" },
@@ -296,7 +355,7 @@ function ProviderDashboard() {
                 onClick={() => setFilter(tab.key)}
                 className={`px-4 py-2 rounded-lg font-semibold transition-all text-sm ${
                   filter === tab.key
-                    ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
+                    ? "bg-linear-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
                     : "bg-white text-gray-700 border-2 border-gray-200 hover:border-cyan-300"
                 }`}
               >
@@ -356,16 +415,20 @@ function ProviderDashboard() {
                       <p className="text-sm font-semibold text-blue-900 mb-1">
                         Special Instructions:
                       </p>
-                      <p className="text-sm text-blue-800">{booking.special_instructions}</p>
+                      <p className="text-sm text-blue-800">
+                        {booking.special_instructions}
+                      </p>
                     </div>
                   )}
 
                   {booking.status === "pending" && (
                     <div className="flex gap-3 pt-4 border-t border-gray-100">
                       <button
-                        onClick={() => handleRespondToBooking(booking.booking_id, "accept")}
+                        onClick={() =>
+                          handleRespondToBooking(booking.booking_id, "accept")
+                        }
                         disabled={respondingId === booking.booking_id}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {respondingId === booking.booking_id ? (
                           <>
@@ -380,9 +443,11 @@ function ProviderDashboard() {
                         )}
                       </button>
                       <button
-                        onClick={() => handleRespondToBooking(booking.booking_id, "decline")}
+                        onClick={() =>
+                          handleRespondToBooking(booking.booking_id, "decline")
+                        }
                         disabled={respondingId === booking.booking_id}
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-linear-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {respondingId === booking.booking_id ? (
                           <>
@@ -402,7 +467,8 @@ function ProviderDashboard() {
                   {booking.status === "accepted" && (
                     <div className="pt-4 border-t border-gray-100">
                       <p className="text-sm text-blue-600 font-medium">
-                        ✓ You have accepted this booking. Please complete the service on the scheduled date.
+                        ✓ You have accepted this booking. Please complete the
+                        service on the scheduled date.
                       </p>
                     </div>
                   )}
@@ -415,7 +481,9 @@ function ProviderDashboard() {
         {/* Recent Reviews Section */}
         {reviews.length > 0 && (
           <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Recent Reviews</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Recent Reviews
+            </h2>
             <div className="space-y-4">
               {reviews.slice(0, 5).map((review) => (
                 <div
@@ -428,7 +496,9 @@ function ProviderDashboard() {
                         <span
                           key={i}
                           className={`text-lg ${
-                            i < review.rating ? "text-yellow-400" : "text-gray-300"
+                            i < review.rating
+                              ? "text-yellow-400"
+                              : "text-gray-300"
                           }`}
                         >
                           ★
@@ -451,3 +521,4 @@ function ProviderDashboard() {
 }
 
 export default ProviderDashboard;
+

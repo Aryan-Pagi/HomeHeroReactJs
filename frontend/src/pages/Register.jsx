@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserPlus, AlertCircle, Loader, CheckCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { validateForm } from "../utils/validation";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ function Register() {
     userType: "customer",
   });
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -20,25 +22,41 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
+
+    // Validate all fields
+    const validation = validateForm({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password,
+    });
+
+    if (!validation.isValid) {
+      setFieldErrors(validation.errors);
+      setError("Please fix the errors below");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const registrationData = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
+        name: validation.sanitizedData.name,
+        email: validation.sanitizedData.email,
+        phone: validation.sanitizedData.phone,
+        password: validation.sanitizedData.password,
         user_type: formData.userType,
       };
-      
+
       console.log("Sending registration data:", registrationData);
-      
+
       await register(registrationData);
-      
+
       setSuccess(true);
       setTimeout(() => {
         // Redirect providers to verification page
-        if (formData.userType === 'provider') {
+        if (formData.userType === "provider") {
           navigate("/provider-verification");
         } else {
           navigate("/login");
@@ -48,52 +66,56 @@ function Register() {
       console.error("Registration error:", err);
       console.error("Error detail:", err.detail);
       console.error("Error data:", err.data);
-      
+
       // Handle different error response formats
       let errorMessage = "Registration failed. Please try again.";
-      
+
       // Check if error has detail property directly (from catch block)
       if (err.detail) {
         const detail = err.detail;
-        
+
         // If detail is an array (validation errors)
         if (Array.isArray(detail)) {
-          errorMessage = detail.map(e => {
-            // Extract field name and message
-            const field = e.loc ? e.loc[e.loc.length - 1] : 'field';
-            const msg = e.msg || e.message || 'validation error';
-            return `${field}: ${msg}`;
-          }).join(", ");
-        } 
+          errorMessage = detail
+            .map((e) => {
+              // Extract field name and message
+              const field = e.loc ? e.loc[e.loc.length - 1] : "field";
+              const msg = e.msg || e.message || "validation error";
+              return `${field}: ${msg}`;
+            })
+            .join(", ");
+        }
         // If detail is a string
-        else if (typeof detail === 'string') {
+        else if (typeof detail === "string") {
           errorMessage = detail;
         }
       }
       // Check if error has response.data.detail
       else if (err.response?.data?.detail) {
         const detail = err.response.data.detail;
-        
+
         // If detail is an array (validation errors)
         if (Array.isArray(detail)) {
-          errorMessage = detail.map(e => {
-            const field = e.loc ? e.loc[e.loc.length - 1] : 'field';
-            const msg = e.msg || e.message || 'validation error';
-            return `${field}: ${msg}`;
-          }).join(", ");
-        } 
+          errorMessage = detail
+            .map((e) => {
+              const field = e.loc ? e.loc[e.loc.length - 1] : "field";
+              const msg = e.msg || e.message || "validation error";
+              return `${field}: ${msg}`;
+            })
+            .join(", ");
+        }
         // If detail is a string
-        else if (typeof detail === 'string') {
+        else if (typeof detail === "string") {
           errorMessage = detail;
         }
         // If detail is an object
-        else if (typeof detail === 'object') {
+        else if (typeof detail === "object") {
           errorMessage = detail.msg || detail.message || JSON.stringify(detail);
         }
       } else if (err.message) {
         errorMessage = err.message;
       }
-      
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -112,7 +134,7 @@ function Register() {
       <div className="max-w-2xl w-full">
         <div className="bg-white rounded-2xl shadow-2xl p-10 border border-gray-100">
           <div className="text-center mb-8">
-            <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+            <div className="bg-linear-to-br from-cyan-500 to-cyan-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
               <UserPlus className="h-8 w-8 text-white" />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -131,7 +153,9 @@ function Register() {
           {success && (
             <div className="mb-6 p-4 bg-green-50 border-2 border-green-200 rounded-xl flex items-center gap-3">
               <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
-              <p className="text-green-700 text-sm">Registration successful! Redirecting to login...</p>
+              <p className="text-green-700 text-sm">
+                Registration successful! Redirecting to login...
+              </p>
             </div>
           )}
 
@@ -146,10 +170,17 @@ function Register() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all"
+                  className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all ${
+                    fieldErrors.name
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-cyan-500"
+                  }`}
                   placeholder="Enter your full name"
                   required
                 />
+                {fieldErrors.name && (
+                  <p className="mt-1 text-sm text-red-600">{fieldErrors.name}</p>
+                )}
               </div>
 
               <div>
@@ -161,10 +192,17 @@ function Register() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all"
+                  className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all ${
+                    fieldErrors.email
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-cyan-500"
+                  }`}
                   placeholder="Enter your email"
                   required
                 />
+                {fieldErrors.email && (
+                  <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
+                )}
               </div>
 
               <div>
@@ -176,10 +214,17 @@ function Register() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all"
-                  placeholder="Enter your phone number"
+                  className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all ${
+                    fieldErrors.phone
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-cyan-500"
+                  }`}
+                  placeholder="Enter your phone number (e.g., 9876543210)"
                   required
                 />
+                {fieldErrors.phone && (
+                  <p className="mt-1 text-sm text-red-600">{fieldErrors.phone}</p>
+                )}
               </div>
 
               <div>
@@ -191,10 +236,21 @@ function Register() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full px-4 py-3.5 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 outline-none transition-all"
+                  className={`w-full px-4 py-3.5 border-2 rounded-xl focus:ring-2 focus:ring-cyan-500 outline-none transition-all ${
+                    fieldErrors.password
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-cyan-500"
+                  }`}
                   placeholder="Create a password"
                   required
                 />
+                {fieldErrors.password ? (
+                  <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>
+                ) : (
+                  <p className="mt-1 text-xs text-gray-500">
+                    At least 8 characters with uppercase, lowercase, and number
+                  </p>
+                )}
               </div>
             </div>
 
@@ -260,7 +316,7 @@ function Register() {
             <button
               type="submit"
               disabled={loading || success}
-              className="w-full bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white py-4 rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+              className="w-full bg-linear-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white py-4 rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -296,3 +352,4 @@ function Register() {
 }
 
 export default Register;
+

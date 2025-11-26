@@ -49,11 +49,13 @@ function AllProviders() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-3">
+          <h1 className="text-4xl font-bold bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent mb-3">
             All Service Providers
           </h1>
           <p className="text-lg text-gray-600 mb-6">
-            Browse <span className="font-bold text-cyan-600">{providers.length}</span> professionals ready to help
+            Browse{" "}
+            <span className="font-bold text-cyan-600">{providers.length}</span>{" "}
+            professionals ready to help
           </p>
 
           {/* Filter Buttons */}
@@ -62,7 +64,7 @@ function AllProviders() {
               onClick={() => setFilter("all")}
               className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
                 filter === "all"
-                  ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
+                  ? "bg-linear-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
                   : "bg-white text-gray-700 border-2 border-gray-200 hover:border-cyan-300"
               }`}
             >
@@ -72,7 +74,7 @@ function AllProviders() {
               onClick={() => setFilter("available")}
               className={`px-6 py-2.5 rounded-lg font-semibold transition-all ${
                 filter === "available"
-                  ? "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
+                  ? "bg-linear-to-r from-cyan-500 to-cyan-600 text-white shadow-md"
                   : "bg-white text-gray-700 border-2 border-gray-200 hover:border-cyan-300"
               }`}
             >
@@ -102,7 +104,7 @@ function AllProviders() {
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer transform hover:-translate-y-2 border border-gray-100 overflow-hidden"
               >
                 {/* Provider Image/Avatar */}
-                <div className="h-48 bg-gradient-to-br from-cyan-100 to-blue-100 flex items-center justify-center relative">
+                <div className="h-48 bg-linear-to-br from-cyan-100 to-blue-100 flex items-center justify-center relative">
                   <span className="text-6xl">👨‍🔧</span>
                   {provider.availability && (
                     <div className="absolute top-3 right-3 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
@@ -161,7 +163,7 @@ function AllProviders() {
                         ₹{provider.pricing}/hr
                       </p>
                     </div>
-                    <button className="bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all">
+                    <button className="bg-linear-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all">
                       View Profile
                     </button>
                   </div>
@@ -176,3 +178,4 @@ function AllProviders() {
 }
 
 export default AllProviders;
+

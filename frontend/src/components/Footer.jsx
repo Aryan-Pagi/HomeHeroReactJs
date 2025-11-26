@@ -1,54 +1,70 @@
 import { Link } from "react-router-dom";
-import { Wrench, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import {
+  Wrench,
+  Mail,
+  Phone,
+  MapPin,
+  Facebook,
+  Twitter,
+  Instagram,
+  Linkedin,
+} from "lucide-react";
 
 function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300">
+    <footer className="bg-gray-900 text-gray-300" role="contentinfo" aria-label="Site footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About Section */}
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="bg-gradient-to-br from-cyan-500 to-cyan-600 p-2 rounded-lg">
+              <div className="bg-linear-to-br from-cyan-500 to-cyan-600 p-2 rounded-lg">
                 <Wrench className="h-6 w-6 text-white" />
               </div>
               <span className="text-2xl font-bold text-white">HomeHero</span>
             </div>
             <p className="text-gray-400 mb-4">
-              Goa's trusted platform for connecting homeowners with verified local service professionals.
+              Goa's trusted platform for connecting homeowners with verified
+              local service professionals.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="hover:text-cyan-500 transition-colors">
-                <Facebook className="h-5 w-5" />
+            <div className="flex space-x-4" role="group" aria-label="Social media links">
+              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Follow us on Facebook">
+                <Facebook className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-cyan-500 transition-colors">
-                <Twitter className="h-5 w-5" />
+              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Follow us on Twitter">
+                <Twitter className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-cyan-500 transition-colors">
-                <Instagram className="h-5 w-5" />
+              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Follow us on Instagram">
+                <Instagram className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-cyan-500 transition-colors">
-                <Linkedin className="h-5 w-5" />
+              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Connect with us on LinkedIn">
+                <Linkedin className="h-5 w-5" aria-hidden="true" />
               </a>
             </div>
           </div>
 
           {/* Quick Links */}
-          <div>
+          <nav aria-label="Quick links">
             <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="hover:text-cyan-500 transition-colors">
+                <Link to="/" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/search" className="hover:text-cyan-500 transition-colors">
+                <Link
+                  to="/search"
+                  className="hover:text-cyan-500 transition-colors"
+                >
                   Find Services
                 </Link>
               </li>
               <li>
-                <Link to="/my-bookings" className="hover:text-cyan-500 transition-colors">
+                <Link
+                  to="/my-bookings"
+                  className="hover:text-cyan-500 transition-colors"
+                >
                   My Bookings
                 </Link>
               </li>
@@ -58,11 +74,13 @@ function Footer() {
                 </a>
               </li>
             </ul>
-          </div>
+          </nav>
 
           {/* Services */}
           <div>
-            <h3 className="text-white font-bold text-lg mb-4">Popular Services</h3>
+            <h3 className="text-white font-bold text-lg mb-4">
+              Popular Services
+            </h3>
             <ul className="space-y-2">
               <li>
                 <a href="#" className="hover:text-cyan-500 transition-colors">
@@ -137,3 +155,4 @@ function Footer() {
 }
 
 export default Footer;
+
