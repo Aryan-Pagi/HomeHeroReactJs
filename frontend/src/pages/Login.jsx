@@ -73,27 +73,47 @@ function Login() {
   return (
     <main className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full">
-        <div className="bg-white rounded-2xl shadow-2xl p-10 border border-gray-100" role="region" aria-labelledby="login-heading">
+        <div
+          className="bg-white rounded-2xl shadow-2xl p-10 border border-gray-100"
+          role="region"
+          aria-labelledby="login-heading"
+        >
           <div className="text-center mb-8">
-            <div className="bg-linear-to-br from-cyan-500 to-cyan-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg" aria-hidden="true">
+            <div
+              className="bg-linear-to-br from-cyan-500 to-cyan-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+              aria-hidden="true"
+            >
               <LogIn className="h-8 w-8 text-white" />
             </div>
-            <h1 id="login-heading" className="text-3xl font-bold text-gray-900 mb-2">
+            <h1
+              id="login-heading"
+              className="text-3xl font-bold text-gray-900 mb-2"
+            >
               Welcome Back
             </h1>
             <p className="text-gray-600">Sign in to continue to HomeHero</p>
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl flex items-center gap-3" role="alert" aria-live="assertive">
-              <AlertCircle className="h-5 w-5 text-red-500 shrink-0" aria-hidden="true" />
+            <div
+              className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl flex items-center gap-3"
+              role="alert"
+              aria-live="assertive"
+            >
+              <AlertCircle
+                className="h-5 w-5 text-red-500 shrink-0"
+                aria-hidden="true"
+              />
               <p className="text-red-700 text-sm">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6" noValidate>
             <div>
-              <label htmlFor="email-input" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label
+                htmlFor="email-input"
+                className="block text-sm font-semibold text-gray-700 mb-2"
+              >
                 Email or Phone
               </label>
               <input
@@ -111,7 +131,10 @@ function Login() {
             </div>
 
             <div>
-              <label htmlFor="password-input" className="block text-sm font-semibold text-gray-700 mb-2">
+              <label
+                htmlFor="password-input"
+                className="block text-sm font-semibold text-gray-700 mb-2"
+              >
                 Password
               </label>
               <input
@@ -132,7 +155,9 @@ function Login() {
               type="submit"
               disabled={loading}
               className="w-full bg-linear-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white py-4 rounded-xl font-bold text-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2"
-              aria-label={loading ? "Logging in, please wait" : "Login to your account"}
+              aria-label={
+                loading ? "Logging in, please wait" : "Login to your account"
+              }
             >
               {loading ? (
                 <>
@@ -175,4 +200,3 @@ function Login() {
 }
 
 export default Login;
-

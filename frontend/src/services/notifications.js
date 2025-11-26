@@ -4,9 +4,10 @@
  * For production, consider upgrading to WebSocket for better performance
  */
 
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 /**
  * Fetch unread notifications for the current user
@@ -16,12 +17,12 @@ export const getNotifications = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/notifications`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch notifications:', error);
+    console.error("Failed to fetch notifications:", error);
     return [];
   }
 };
@@ -38,13 +39,13 @@ export const markNotificationAsRead = async (notificationId) => {
       {},
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Failed to mark notification as read:', error);
+    console.error("Failed to mark notification as read:", error);
     throw error;
   }
 };
@@ -60,13 +61,13 @@ export const markAllNotificationsAsRead = async () => {
       {},
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Failed to mark all notifications as read:', error);
+    console.error("Failed to mark all notifications as read:", error);
     throw error;
   }
 };
@@ -82,13 +83,13 @@ export const deleteNotification = async (notificationId) => {
       `${API_BASE_URL}/notifications/${notificationId}`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Failed to delete notification:', error);
+    console.error("Failed to delete notification:", error);
     throw error;
   }
 };
@@ -101,21 +102,21 @@ export const deleteNotification = async (notificationId) => {
  */
 export const startNotificationPolling = (callback, interval = 30000) => {
   let lastCheck = Date.now();
-  
+
   const poll = async () => {
     try {
       const notifications = await getNotifications();
       const newNotifications = notifications.filter(
-        n => new Date(n.created_at).getTime() > lastCheck
+        (n) => new Date(n.created_at).getTime() > lastCheck
       );
-      
+
       if (newNotifications.length > 0) {
         callback(newNotifications);
       }
-      
+
       lastCheck = Date.now();
     } catch (error) {
-      console.error('Polling error:', error);
+      console.error("Polling error:", error);
     }
   };
 

@@ -1,12 +1,15 @@
 # Real-time Notifications Guide
 
 ## Overview
+
 HomeHero now includes a real-time notification system that keeps users informed about booking updates, payments, reviews, and other important events.
 
 ## Implementation Details
 
 ### Architecture
+
 The notification system uses **polling** to fetch updates every 30 seconds. This approach is:
+
 - ✅ Simple to implement
 - ✅ Works across all browsers
 - ✅ No special server requirements
@@ -17,6 +20,7 @@ For production with high traffic, consider upgrading to **WebSocket** for true r
 ## Features
 
 ### For Customers
+
 - 📬 Booking confirmation notifications
 - ✅ Booking acceptance by provider
 - ❌ Booking cancellation alerts
@@ -25,6 +29,7 @@ For production with high traffic, consider upgrading to **WebSocket** for true r
 - 💰 Payment confirmations
 
 ### For Providers
+
 - 📥 New booking requests
 - 💳 Payment received notifications
 - ⭐ New customer reviews
@@ -32,6 +37,7 @@ For production with high traffic, consider upgrading to **WebSocket** for true r
 - 🔔 System announcements
 
 ### UI Features
+
 - 🔴 **Badge**: Shows unread count on bell icon
 - 🔔 **Dropdown**: Clean notification panel in navbar
 - ✨ **Icons**: Visual notification types (✅❌🎉💰⭐)
@@ -43,7 +49,9 @@ For production with high traffic, consider upgrading to **WebSocket** for true r
 ## Files Created
 
 ### 1. `services/notifications.js`
+
 Handles all notification API calls:
+
 - `getNotifications()` - Fetch all notifications
 - `markNotificationAsRead(id)` - Mark single as read
 - `markAllNotificationsAsRead()` - Mark all as read
@@ -51,14 +59,18 @@ Handles all notification API calls:
 - `startNotificationPolling(callback, interval)` - Start polling
 
 ### 2. `context/NotificationContext.jsx`
+
 React context for notification state management:
+
 - Manages notification list and unread count
 - Starts/stops polling based on auth status
 - Provides notification actions to components
 - Handles browser notification permissions
 
 ### 3. `components/NotificationBell.jsx`
+
 UI component displayed in navbar:
+
 - Bell icon with unread badge
 - Dropdown panel with notification list
 - Mark as read / delete actions
@@ -70,6 +82,7 @@ UI component displayed in navbar:
 ### Frontend Integration
 
 The notification system is already integrated into:
+
 - ✅ `App.jsx` - NotificationProvider wraps the app
 - ✅ `Navbar.jsx` - NotificationBell component added
 - ✅ Auto-polling when user is authenticated
@@ -79,6 +92,7 @@ The notification system is already integrated into:
 Your backend needs these API endpoints:
 
 #### 1. Get Notifications
+
 ```
 GET /api/notifications
 Authorization: Bearer {token}
@@ -97,6 +111,7 @@ Response:
 ```
 
 #### 2. Mark as Read
+
 ```
 PUT /api/notifications/{notification_id}/read
 Authorization: Bearer {token}
@@ -105,6 +120,7 @@ Response: { "success": true }
 ```
 
 #### 3. Mark All as Read
+
 ```
 PUT /api/notifications/read-all
 Authorization: Bearer {token}
@@ -113,6 +129,7 @@ Response: { "success": true, "updated_count": 5 }
 ```
 
 #### 4. Delete Notification
+
 ```
 DELETE /api/notifications/{notification_id}
 Authorization: Bearer {token}
@@ -124,14 +141,14 @@ Response: { "success": true }
 
 The system recognizes these notification types:
 
-| Type | Icon | Usage |
-|------|------|-------|
-| `booking_confirmed` | ✅ | Booking accepted by provider |
-| `booking_cancelled` | ❌ | Booking cancelled |
-| `booking_completed` | 🎉 | Service completed |
-| `payment_received` | 💰 | Payment successful |
-| `new_review` | ⭐ | New review received |
-| `system_announcement` | 📢 | Admin announcements |
+| Type                  | Icon | Usage                        |
+| --------------------- | ---- | ---------------------------- |
+| `booking_confirmed`   | ✅   | Booking accepted by provider |
+| `booking_cancelled`   | ❌   | Booking cancelled            |
+| `booking_completed`   | 🎉   | Service completed            |
+| `payment_received`    | 💰   | Payment successful           |
+| `new_review`          | ⭐   | New review received          |
+| `system_announcement` | 📢   | Admin announcements          |
 
 ## Usage
 
@@ -140,22 +157,22 @@ The system recognizes these notification types:
 Use the `useNotifications` hook in any component:
 
 ```jsx
-import { useNotifications } from '../context/NotificationContext';
+import { useNotifications } from "../context/NotificationContext";
 
 function MyComponent() {
-  const { 
-    notifications, 
-    unreadCount, 
-    markAsRead, 
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
     markAllAsRead,
     removeNotification,
-    refreshNotifications 
+    refreshNotifications,
   } = useNotifications();
 
   return (
     <div>
       <p>You have {unreadCount} unread notifications</p>
-      {notifications.map(n => (
+      {notifications.map((n) => (
         <div key={n.notification_id}>{n.message}</div>
       ))}
     </div>
@@ -184,6 +201,7 @@ async def create_notification(user_id: str, notification_type: str, message: str
 ### Trigger Scenarios
 
 **When a booking is created:**
+
 ```python
 await create_notification(
     provider_id,
@@ -193,6 +211,7 @@ await create_notification(
 ```
 
 **When booking is confirmed:**
+
 ```python
 await create_notification(
     customer_id,
@@ -202,6 +221,7 @@ await create_notification(
 ```
 
 **When payment is received:**
+
 ```python
 await create_notification(
     provider_id,
@@ -215,16 +235,18 @@ await create_notification(
 Desktop notifications are automatically requested when the app loads.
 
 ### Enable Browser Notifications
+
 1. User sees browser permission prompt
 2. User clicks "Allow"
 3. Notifications appear even when tab is inactive
 
 ### Test Browser Notifications
+
 ```javascript
 // Test notification
-new Notification('HomeHero', {
-  body: 'This is a test notification',
-  icon: '/favicon.ico',
+new Notification("HomeHero", {
+  body: "This is a test notification",
+  icon: "/favicon.ico",
 });
 ```
 
@@ -240,6 +262,7 @@ const stopPolling = startNotificationPolling(handleNewNotifications, 15000);
 ```
 
 **Recommended intervals:**
+
 - Development: 10-15 seconds
 - Production (low traffic): 30 seconds
 - Production (high traffic): 60 seconds or switch to WebSocket
@@ -247,6 +270,7 @@ const stopPolling = startNotificationPolling(handleNewNotifications, 15000);
 ## Performance Optimization
 
 ### Current Implementation (Polling)
+
 - ✅ Simple and reliable
 - ✅ Works everywhere
 - ⚠️ Some server load with many users
@@ -255,14 +279,16 @@ const stopPolling = startNotificationPolling(handleNewNotifications, 15000);
 ### Upgrade to WebSocket (Recommended for Production)
 
 Benefits:
+
 - ⚡ Instant notifications (no delay)
 - 📉 Lower server load
 - 🔥 True real-time experience
 
 Implementation:
+
 ```javascript
 // Replace polling with WebSocket
-const ws = new WebSocket('wss://your-domain.com/ws/notifications');
+const ws = new WebSocket("wss://your-domain.com/ws/notifications");
 
 ws.onmessage = (event) => {
   const notification = JSON.parse(event.data);
@@ -273,24 +299,28 @@ ws.onmessage = (event) => {
 ## Troubleshooting
 
 ### Notifications Not Appearing
+
 1. Check if user is authenticated
 2. Verify backend endpoints are working
 3. Check browser console for errors
 4. Ensure `NotificationProvider` wraps the app
 
 ### Polling Not Working
+
 1. Check `isAuthenticated` status
 2. Verify token in localStorage
 3. Check network tab for API calls
 4. Verify 30-second intervals in console
 
 ### Browser Notifications Not Showing
+
 1. Check permission: `Notification.permission`
 2. Request permission: `Notification.requestPermission()`
 3. Ensure notifications are enabled in browser settings
 4. Test with: `new Notification('Test', {body: 'Test'})`
 
 ### High Server Load
+
 1. Increase polling interval (30s → 60s)
 2. Implement caching on backend
 3. Add rate limiting
@@ -309,7 +339,7 @@ CREATE TABLE notifications (
   is_read BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
-  
+
   INDEX idx_user_notifications (user_id, created_at),
   INDEX idx_unread (user_id, is_read)
 );
@@ -327,6 +357,7 @@ CREATE TABLE notifications (
 ## Testing
 
 ### Manual Testing
+
 1. Create a booking → Check for notification
 2. Accept booking (provider) → Customer gets notification
 3. Complete payment → Provider gets notification
@@ -336,6 +367,7 @@ CREATE TABLE notifications (
 7. Delete notification → Removed from list
 
 ### Test Data
+
 Create test notifications via API:
 
 ```bash
@@ -364,6 +396,7 @@ curl -X POST http://localhost:8000/api/notifications \
 ## Support
 
 For issues with:
+
 - **Polling**: Check NotificationContext.jsx
 - **UI**: Check NotificationBell.jsx
 - **API calls**: Check services/notifications.js
@@ -382,13 +415,13 @@ When ready to upgrade:
 Example WebSocket implementation:
 
 ```javascript
-import io from 'socket.io-client';
+import io from "socket.io-client";
 
-const socket = io('wss://your-domain.com', {
-  auth: { token: localStorage.getItem('token') }
+const socket = io("wss://your-domain.com", {
+  auth: { token: localStorage.getItem("token") },
 });
 
-socket.on('notification', (data) => {
+socket.on("notification", (data) => {
   handleNewNotifications([data]);
 });
 ```

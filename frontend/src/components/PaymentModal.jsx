@@ -1,10 +1,16 @@
-import { useState } from 'react';
-import { CreditCard, Loader, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import {
+  CreditCard,
+  Loader,
+  CheckCircle,
+  XCircle,
+  AlertCircle,
+} from "lucide-react";
 import {
   loadRazorpayScript,
   initiateRazorpayPayment,
   verifyRazorpayPayment,
-} from '../services/payment';
+} from "../services/payment";
 
 /**
  * PaymentModal Component
@@ -17,35 +23,35 @@ import {
  */
 function PaymentModal({ isOpen, onClose, bookingDetails, onSuccess }) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [paymentStatus, setPaymentStatus] = useState(null); // 'success', 'failed', null
 
   if (!isOpen) return null;
 
   const handlePayment = async () => {
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       // Load Razorpay script
       const scriptLoaded = await loadRazorpayScript();
       if (!scriptLoaded) {
-        throw new Error('Failed to load payment gateway. Please try again.');
+        throw new Error("Failed to load payment gateway. Please try again.");
       }
 
       // Create order on backend
       const orderData = await initiateRazorpayPayment({
         booking_id: bookingDetails.booking_id,
         amount: bookingDetails.amount,
-        currency: 'INR',
+        currency: "INR",
       });
 
       // Razorpay options
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_dummy_key',
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || "rzp_test_dummy_key",
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'HomeHero',
+        name: "HomeHero",
         description: `Payment for ${bookingDetails.service_type}`,
         order_id: orderData.order_id,
         handler: async (response) => {
@@ -58,29 +64,29 @@ function PaymentModal({ isOpen, onClose, bookingDetails, onSuccess }) {
               booking_id: bookingDetails.booking_id,
             });
 
-            setPaymentStatus('success');
+            setPaymentStatus("success");
             setTimeout(() => {
               onSuccess(verificationResult);
               onClose();
             }, 2000);
           } catch (err) {
-            console.error('Payment verification failed:', err);
-            setPaymentStatus('failed');
-            setError('Payment verification failed. Please contact support.');
+            console.error("Payment verification failed:", err);
+            setPaymentStatus("failed");
+            setError("Payment verification failed. Please contact support.");
           }
         },
         prefill: {
-          name: bookingDetails.customer_name || '',
-          email: bookingDetails.customer_email || '',
-          contact: bookingDetails.customer_phone || '',
+          name: bookingDetails.customer_name || "",
+          email: bookingDetails.customer_email || "",
+          contact: bookingDetails.customer_phone || "",
         },
         theme: {
-          color: '#06b6d4', // Cyan-500
+          color: "#06b6d4", // Cyan-500
         },
         modal: {
           ondismiss: () => {
             setLoading(false);
-            setError('Payment cancelled by user');
+            setError("Payment cancelled by user");
           },
         },
       };
@@ -90,8 +96,8 @@ function PaymentModal({ isOpen, onClose, bookingDetails, onSuccess }) {
       razorpay.open();
       setLoading(false);
     } catch (err) {
-      console.error('Payment initiation failed:', err);
-      setError(err.message || 'Failed to initiate payment. Please try again.');
+      console.error("Payment initiation failed:", err);
+      setError(err.message || "Failed to initiate payment. Please try again.");
       setLoading(false);
     }
   };
@@ -109,20 +115,24 @@ function PaymentModal({ isOpen, onClose, bookingDetails, onSuccess }) {
         </button>
 
         {/* Payment Status */}
-        {paymentStatus === 'success' ? (
+        {paymentStatus === "success" ? (
           <div className="text-center py-8">
             <div className="bg-green-100 rounded-full p-4 w-20 h-20 mx-auto mb-4">
               <CheckCircle className="h-12 w-12 text-green-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Payment Successful!
+            </h2>
             <p className="text-gray-600">Your booking has been confirmed.</p>
           </div>
-        ) : paymentStatus === 'failed' ? (
+        ) : paymentStatus === "failed" ? (
           <div className="text-center py-8">
             <div className="bg-red-100 rounded-full p-4 w-20 h-20 mx-auto mb-4">
               <XCircle className="h-12 w-12 text-red-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Failed</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Payment Failed
+            </h2>
             <p className="text-gray-600">{error}</p>
             <button
               onClick={() => setPaymentStatus(null)}
@@ -138,21 +148,31 @@ function PaymentModal({ isOpen, onClose, bookingDetails, onSuccess }) {
               <div className="bg-linear-to-br from-cyan-500 to-cyan-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <CreditCard className="h-8 w-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Details</h2>
-              <p className="text-gray-600">Secure payment powered by Razorpay</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Payment Details
+              </h2>
+              <p className="text-gray-600">
+                Secure payment powered by Razorpay
+              </p>
             </div>
 
             {/* Booking Summary */}
             <div className="bg-gray-50 rounded-xl p-6 mb-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Booking Summary</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">
+                Booking Summary
+              </h3>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Service</span>
-                  <span className="font-medium text-gray-900">{bookingDetails.service_type}</span>
+                  <span className="font-medium text-gray-900">
+                    {bookingDetails.service_type}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Provider</span>
-                  <span className="font-medium text-gray-900">{bookingDetails.provider_name}</span>
+                  <span className="font-medium text-gray-900">
+                    {bookingDetails.provider_name}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Date & Time</span>
@@ -162,9 +182,11 @@ function PaymentModal({ isOpen, onClose, bookingDetails, onSuccess }) {
                 </div>
                 <div className="border-t border-gray-200 pt-2 mt-2">
                   <div className="flex justify-between">
-                    <span className="font-semibold text-gray-900">Total Amount</span>
+                    <span className="font-semibold text-gray-900">
+                      Total Amount
+                    </span>
                     <span className="font-bold text-cyan-600 text-xl">
-                      ₹{bookingDetails.amount || '500'}
+                      ₹{bookingDetails.amount || "500"}
                     </span>
                   </div>
                 </div>
@@ -193,7 +215,7 @@ function PaymentModal({ isOpen, onClose, bookingDetails, onSuccess }) {
               ) : (
                 <>
                   <CreditCard className="h-5 w-5" />
-                  Pay ₹{bookingDetails.amount || '500'}
+                  Pay ₹{bookingDetails.amount || "500"}
                 </>
               )}
             </button>

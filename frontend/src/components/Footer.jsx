@@ -12,7 +12,11 @@ import {
 
 function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300" role="contentinfo" aria-label="Site footer">
+    <footer
+      className="bg-gray-900 text-gray-300"
+      role="contentinfo"
+      aria-label="Site footer"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* About Section */}
@@ -27,17 +31,37 @@ function Footer() {
               Goa's trusted platform for connecting homeowners with verified
               local service professionals.
             </p>
-            <div className="flex space-x-4" role="group" aria-label="Social media links">
-              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Follow us on Facebook">
+            <div
+              className="flex space-x-4"
+              role="group"
+              aria-label="Social media links"
+            >
+              <a
+                href="#"
+                className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded"
+                aria-label="Follow us on Facebook"
+              >
                 <Facebook className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Follow us on Twitter">
+              <a
+                href="#"
+                className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded"
+                aria-label="Follow us on Twitter"
+              >
                 <Twitter className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Follow us on Instagram">
+              <a
+                href="#"
+                className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded"
+                aria-label="Follow us on Instagram"
+              >
                 <Instagram className="h-5 w-5" aria-hidden="true" />
               </a>
-              <a href="#" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded" aria-label="Connect with us on LinkedIn">
+              <a
+                href="#"
+                className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded"
+                aria-label="Connect with us on LinkedIn"
+              >
                 <Linkedin className="h-5 w-5" aria-hidden="true" />
               </a>
             </div>
@@ -48,7 +72,10 @@ function Footer() {
             <h3 className="text-white font-bold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded">
+                <Link
+                  to="/"
+                  className="hover:text-cyan-500 transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500 rounded"
+                >
                   Home
                 </Link>
               </li>
@@ -155,4 +182,3 @@ function Footer() {
 }
 
 export default Footer;
-

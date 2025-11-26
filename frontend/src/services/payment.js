@@ -4,9 +4,10 @@
  * Configure your payment gateway credentials in environment variables
  */
 
-import axios from 'axios';
+import axios from "axios";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000/api";
 
 /**
  * Initialize Razorpay payment
@@ -20,13 +21,13 @@ export const initiateRazorpayPayment = async (paymentData) => {
       paymentData,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Razorpay payment initiation failed:', error);
+    console.error("Razorpay payment initiation failed:", error);
     throw error;
   }
 };
@@ -43,13 +44,13 @@ export const verifyRazorpayPayment = async (paymentData) => {
       paymentData,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Razorpay payment verification failed:', error);
+    console.error("Razorpay payment verification failed:", error);
     throw error;
   }
 };
@@ -66,13 +67,13 @@ export const initiateStripePayment = async (paymentData) => {
       paymentData,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Stripe payment initiation failed:', error);
+    console.error("Stripe payment initiation failed:", error);
     throw error;
   }
 };
@@ -83,8 +84,8 @@ export const initiateStripePayment = async (paymentData) => {
  */
 export const loadRazorpayScript = () => {
   return new Promise((resolve) => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
@@ -97,8 +98,8 @@ export const loadRazorpayScript = () => {
  */
 export const loadStripeScript = () => {
   return new Promise((resolve) => {
-    const script = document.createElement('script');
-    script.src = 'https://js.stripe.com/v3/';
+    const script = document.createElement("script");
+    script.src = "https://js.stripe.com/v3/";
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
@@ -116,13 +117,13 @@ export const getPaymentStatus = async (paymentId) => {
       `${API_BASE_URL}/payments/${paymentId}/status`,
       {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       }
     );
     return response.data;
   } catch (error) {
-    console.error('Failed to fetch payment status:', error);
+    console.error("Failed to fetch payment status:", error);
     throw error;
   }
 };

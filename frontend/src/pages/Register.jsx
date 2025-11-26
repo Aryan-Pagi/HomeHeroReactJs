@@ -179,7 +179,9 @@ function Register() {
                   required
                 />
                 {fieldErrors.name && (
-                  <p className="mt-1 text-sm text-red-600">{fieldErrors.name}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.name}
+                  </p>
                 )}
               </div>
 
@@ -201,7 +203,9 @@ function Register() {
                   required
                 />
                 {fieldErrors.email && (
-                  <p className="mt-1 text-sm text-red-600">{fieldErrors.email}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.email}
+                  </p>
                 )}
               </div>
 
@@ -223,7 +227,9 @@ function Register() {
                   required
                 />
                 {fieldErrors.phone && (
-                  <p className="mt-1 text-sm text-red-600">{fieldErrors.phone}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.phone}
+                  </p>
                 )}
               </div>
 
@@ -245,7 +251,9 @@ function Register() {
                   required
                 />
                 {fieldErrors.password ? (
-                  <p className="mt-1 text-sm text-red-600">{fieldErrors.password}</p>
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.password}
+                  </p>
                 ) : (
                   <p className="mt-1 text-xs text-gray-500">
                     At least 8 characters with uppercase, lowercase, and number
@@ -352,4 +360,3 @@ function Register() {
 }
 
 export default Register;
-

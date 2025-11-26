@@ -1,9 +1,11 @@
 # Payment Integration Guide
 
 ## Overview
+
 HomeHero now supports online payment processing for service bookings using Razorpay (primary) and Stripe (alternative).
 
 ## Features
+
 - ✅ Secure payment processing
 - ✅ Razorpay integration (India-focused)
 - ✅ Stripe integration (Global)
@@ -18,12 +20,14 @@ HomeHero now supports online payment processing for service bookings using Razor
 ### 1. Frontend Setup
 
 #### Install Dependencies
+
 ```bash
 cd frontend
 # No additional dependencies needed - using CDN scripts
 ```
 
 #### Configure Environment Variables
+
 ```bash
 # Copy the example file
 cp .env.example .env
@@ -36,6 +40,7 @@ VITE_API_URL=http://localhost:8000/api
 ### 2. Backend Setup
 
 #### Add Payment Routes
+
 The backend should have these endpoints:
 
 ```python
@@ -60,6 +65,7 @@ Returns: { "status": "captured|failed|pending", "amount": 500 }
 ```
 
 #### Backend Environment Variables
+
 ```env
 RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxx
 RAZORPAY_KEY_SECRET=xxxxxxxxxxxxx_secret
@@ -76,7 +82,7 @@ STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxx
 2. **Select Provider**: Click on a provider card to view profile
 3. **Create Booking**: Fill in booking details (service, date, instructions)
 4. **Make Payment**: After booking creation, payment modal appears automatically
-5. **Complete Payment**: 
+5. **Complete Payment**:
    - Enter card details in Razorpay checkout
    - Payment is verified automatically
    - Booking status updated to "paid"
@@ -122,27 +128,32 @@ User redirected to "My Bookings"
 ### Test Cards (Razorpay Test Mode)
 
 **Successful Payment:**
+
 - Card: 4111 1111 1111 1111
 - Expiry: Any future date
 - CVV: Any 3 digits
 - Name: Any name
 
 **Failed Payment:**
+
 - Card: 4000 0000 0000 0002
 - This will trigger a payment failure
 
 **Network Error:**
+
 - Card: 4000 0000 0000 0119
 - Simulates network issues
 
 ### Test Mode vs Production
 
 **Test Mode:**
+
 - Use test keys: `rzp_test_xxxxx`
 - No real money transferred
 - Use test cards above
 
 **Production Mode:**
+
 - Use live keys: `rzp_live_xxxxx`
 - Real payments processed
 - Requires business verification
@@ -160,16 +171,19 @@ User redirected to "My Bookings"
 ## Troubleshooting
 
 ### Payment Modal Not Opening
+
 - Check if Razorpay script is loaded: `window.Razorpay`
 - Verify environment variable: `VITE_RAZORPAY_KEY_ID`
 - Check browser console for errors
 
 ### Payment Verification Failing
+
 - Ensure signature verification logic is correct on backend
 - Check if webhook secret matches
 - Verify order_id and payment_id are valid
 
 ### Amount Mismatch
+
 - Backend should use smallest currency unit (paise for INR)
 - ₹500 = 50000 paise
 - Frontend displays in rupees, backend processes in paise
@@ -208,6 +222,7 @@ async def verify_payment(data: dict):
 ## Webhooks (Optional)
 
 For production, set up webhooks to handle:
+
 - Payment success notifications
 - Payment failure notifications
 - Refund notifications
@@ -217,10 +232,12 @@ Webhook URL: `https://your-domain.com/api/webhooks/razorpay`
 ## Support
 
 For payment gateway specific issues:
+
 - **Razorpay**: https://razorpay.com/support/
 - **Stripe**: https://support.stripe.com/
 
 For HomeHero integration issues:
+
 - Check backend logs for payment errors
 - Verify booking_id exists before payment
 - Ensure user is authenticated

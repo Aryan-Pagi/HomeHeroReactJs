@@ -9,6 +9,7 @@ Your backend now has **complete support** for the frontend features we added:
 ## 1. 📬 Notification System
 
 ### Database Model
+
 **File:** `backend/app/models/notification.py`
 
 ```python
@@ -23,18 +24,21 @@ class Notification:
 ```
 
 ### API Endpoints
+
 **File:** `backend/app/routers/notifications.py`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/notifications` | Get all notifications for current user |
-| PUT | `/api/notifications/{id}/read` | Mark specific notification as read |
-| PUT | `/api/notifications/read-all` | Mark all notifications as read |
-| DELETE | `/api/notifications/{id}` | Delete a notification |
-| POST | `/api/notifications/create` | Create notification (system use) |
+| Method | Endpoint                       | Description                            |
+| ------ | ------------------------------ | -------------------------------------- |
+| GET    | `/api/notifications`           | Get all notifications for current user |
+| PUT    | `/api/notifications/{id}/read` | Mark specific notification as read     |
+| PUT    | `/api/notifications/read-all`  | Mark all notifications as read         |
+| DELETE | `/api/notifications/{id}`      | Delete a notification                  |
+| POST   | `/api/notifications/create`    | Create notification (system use)       |
 
 ### Schemas
+
 **File:** `backend/app/schemas/notification.py`
+
 - `NotificationCreate` - For creating notifications
 - `NotificationResponse` - API response format
 - `NotificationUpdate` - For updating read status
@@ -44,6 +48,7 @@ class Notification:
 ## 2. 💳 Payment System
 
 ### Database Model
+
 **File:** `backend/app/models/payment.py`
 
 ```python
@@ -64,17 +69,20 @@ class Payment:
 ```
 
 ### API Endpoints
+
 **File:** `backend/app/routers/payments.py`
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/payments/create-order` | Create Razorpay/Stripe order |
-| POST | `/api/payments/verify-payment` | Verify payment signature |
-| GET | `/api/payments/payment-status/{id}` | Get payment status |
-| GET | `/api/payments/booking/{booking_id}` | Get payment for a booking |
+| Method | Endpoint                             | Description                  |
+| ------ | ------------------------------------ | ---------------------------- |
+| POST   | `/api/payments/create-order`         | Create Razorpay/Stripe order |
+| POST   | `/api/payments/verify-payment`       | Verify payment signature     |
+| GET    | `/api/payments/payment-status/{id}`  | Get payment status           |
+| GET    | `/api/payments/booking/{booking_id}` | Get payment for a booking    |
 
 ### Schemas
+
 **File:** `backend/app/schemas/payment.py`
+
 - `PaymentOrderCreate` - Create payment order
 - `PaymentOrderResponse` - Order creation response (includes key_id for Razorpay)
 - `PaymentVerification` - Verify payment with signature
@@ -85,6 +93,7 @@ class Payment:
 
 1. **Frontend creates booking** → Backend returns `booking_id`
 2. **Frontend requests payment order:**
+
    ```
    POST /api/payments/create-order
    {
@@ -92,7 +101,7 @@ class Payment:
      "amount": 500.0,
      "payment_method": "razorpay"
    }
-   
+
    Response:
    {
      "order_id": "order_xyz",
@@ -105,6 +114,7 @@ class Payment:
 3. **Frontend opens Razorpay/Stripe checkout** with order details
 
 4. **After payment, frontend verifies:**
+
    ```
    POST /api/payments/verify-payment
    {
@@ -113,7 +123,7 @@ class Payment:
      "razorpay_payment_id": "pay_abc",
      "razorpay_signature": "signature_hash"
    }
-   
+
    Response:
    {
      "success": true,
@@ -138,9 +148,9 @@ class Payment:
 **File:** `backend/migrations/versions/ea3044b0f1fb_add_notifications_and_payments_tables.py`
 
 ### Created Tables:
+
 1. **notifications** - Stores in-app notifications
    - Indexes on `user_id` and `is_read` for fast queries
-   
 2. **payments** - Stores payment transactions
    - Indexes on `booking_id` and `status` for fast lookups
    - Enums for `payment_method` and `payment_status`
@@ -161,11 +171,13 @@ This will create both tables in your database.
 **File:** `backend/app/main.py`
 
 Added to imports:
+
 ```python
 from app.routers import ..., notifications, payments
 ```
 
 Added to routes:
+
 ```python
 app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
@@ -274,6 +286,7 @@ Notification(
 ```
 
 You can add similar notification creation in:
+
 - **Booking creation** → Notify provider of new booking
 - **Booking acceptance** → Notify customer
 - **Booking completion** → Notify both
@@ -295,6 +308,7 @@ Both will show the new `/api/notifications` and `/api/payments` endpoints.
 ## 10. 🚀 Next Steps
 
 1. **Run migrations:**
+
    ```bash
    cd backend
    alembic upgrade head
@@ -303,6 +317,7 @@ Both will show the new `/api/notifications` and `/api/payments` endpoints.
 2. **Add payment keys** to `backend/.env`
 
 3. **Start backend:**
+
    ```bash
    cd backend
    uvicorn app.main:app --reload
@@ -322,9 +337,9 @@ Both will show the new `/api/notifications` and `/api/payments` endpoints.
 ✅ **Payment Router** - 4 endpoints implemented  
 ✅ **Database Migration** - Generated  
 ✅ **Routers Registered** - Added to main.py  
-✅ **Models Registered** - Added to __init__.py  
+✅ **Models Registered** - Added to **init**.py  
 ✅ **Auto-notifications** - On payment success  
 ✅ **Security** - Signature verification, authorization  
-✅ **No Errors** - All files validated  
+✅ **No Errors** - All files validated
 
 **Your backend is now fully ready for the frontend features!** 🎉

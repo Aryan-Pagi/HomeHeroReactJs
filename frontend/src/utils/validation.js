@@ -48,7 +48,8 @@ export const validators = {
     if (!/^[a-zA-Z\s.'-]+$/.test(sanitized)) {
       return {
         isValid: false,
-        message: "Name can only contain letters, spaces, dots, hyphens, and apostrophes",
+        message:
+          "Name can only contain letters, spaces, dots, hyphens, and apostrophes",
       };
     }
 

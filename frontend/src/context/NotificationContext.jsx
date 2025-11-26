@@ -1,6 +1,15 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { startNotificationPolling, getNotifications } from '../services/notifications';
-import { useAuth } from './AuthContext';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
+import {
+  startNotificationPolling,
+  getNotifications,
+} from "../services/notifications";
+import { useAuth } from "./AuthContext";
 
 const NotificationContext = createContext();
 
@@ -24,24 +33,24 @@ export function NotificationProvider({ children }) {
     try {
       const data = await getNotifications();
       setNotifications(data);
-      setUnreadCount(data.filter(n => !n.is_read).length);
+      setUnreadCount(data.filter((n) => !n.is_read).length);
     } catch (error) {
-      console.error('Failed to fetch notifications:', error);
+      console.error("Failed to fetch notifications:", error);
     }
   }, [isAuthenticated]);
 
   // Handle new notifications from polling
   const handleNewNotifications = useCallback((newNotifications) => {
-    setNotifications(prev => [...newNotifications, ...prev]);
-    setUnreadCount(prev => prev + newNotifications.length);
+    setNotifications((prev) => [...newNotifications, ...prev]);
+    setUnreadCount((prev) => prev + newNotifications.length);
 
     // Show browser notification if permitted
-    if ('Notification' in window && Notification.permission === 'granted') {
-      newNotifications.forEach(notification => {
-        new Notification('HomeHero', {
+    if ("Notification" in window && Notification.permission === "granted") {
+      newNotifications.forEach((notification) => {
+        new Notification("HomeHero", {
           body: notification.message,
-          icon: '/favicon.ico',
-          badge: '/favicon.ico',
+          icon: "/favicon.ico",
+          badge: "/favicon.ico",
         });
       });
     }
@@ -49,32 +58,39 @@ export function NotificationProvider({ children }) {
 
   // Mark notification as read
   const markAsRead = useCallback((notificationId) => {
-    setNotifications(prev =>
-      prev.map(n =>
+    setNotifications((prev) =>
+      prev.map((n) =>
         n.notification_id === notificationId ? { ...n, is_read: true } : n
       )
     );
-    setUnreadCount(prev => Math.max(0, prev - 1));
+    setUnreadCount((prev) => Math.max(0, prev - 1));
   }, []);
 
   // Mark all as read
   const markAllAsRead = useCallback(() => {
-    setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
     setUnreadCount(0);
   }, []);
 
   // Remove notification
-  const removeNotification = useCallback((notificationId) => {
-    setNotifications(prev => prev.filter(n => n.notification_id !== notificationId));
-    setUnreadCount(prev => {
-      const notification = notifications.find(n => n.notification_id === notificationId);
-      return notification && !notification.is_read ? prev - 1 : prev;
-    });
-  }, [notifications]);
+  const removeNotification = useCallback(
+    (notificationId) => {
+      setNotifications((prev) =>
+        prev.filter((n) => n.notification_id !== notificationId)
+      );
+      setUnreadCount((prev) => {
+        const notification = notifications.find(
+          (n) => n.notification_id === notificationId
+        );
+        return notification && !notification.is_read ? prev - 1 : prev;
+      });
+    },
+    [notifications]
+  );
 
   // Request notification permission
   useEffect(() => {
-    if ('Notification' in window && Notification.permission === 'default') {
+    if ("Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
@@ -115,7 +131,9 @@ export function NotificationProvider({ children }) {
 export function useNotifications() {
   const context = useContext(NotificationContext);
   if (!context) {
-    throw new Error('useNotifications must be used within NotificationProvider');
+    throw new Error(
+      "useNotifications must be used within NotificationProvider"
+    );
   }
   return context;
 }

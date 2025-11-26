@@ -103,7 +103,7 @@ function ProviderProfile() {
 
       setCreatedBooking(booking);
       setBookingSuccess(true);
-      
+
       // Show payment modal after brief success message
       setTimeout(() => {
         setBookingSuccess(false);
@@ -122,7 +122,7 @@ function ProviderProfile() {
   };
 
   const handlePaymentSuccess = (paymentResult) => {
-    console.log('Payment successful:', paymentResult);
+    console.log("Payment successful:", paymentResult);
     // Navigate to bookings page after successful payment
     navigate("/my-bookings");
   };
@@ -441,7 +441,7 @@ function ProviderProfile() {
           bookingDetails={{
             booking_id: createdBooking.booking_id,
             service_type: bookingData.service_type || provider.services[0],
-            provider_name: provider.user?.name || 'Service Provider',
+            provider_name: provider.user?.name || "Service Provider",
             date_time: bookingData.date_time,
             amount: provider.pricing || 500,
             customer_name: user?.name,
@@ -456,4 +456,3 @@ function ProviderProfile() {
 }
 
 export default ProviderProfile;
-

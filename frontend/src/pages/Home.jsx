@@ -125,8 +125,13 @@ function Home() {
             aria-label="Search for service providers"
           >
             <div className="flex-1 flex items-center gap-3 px-4 border-r border-gray-200">
-              <Search className="text-cyan-500 h-6 w-6 shrink-0" aria-hidden="true" />
-              <label htmlFor="service-input" className="sr-only">Service type</label>
+              <Search
+                className="text-cyan-500 h-6 w-6 shrink-0"
+                aria-hidden="true"
+              />
+              <label htmlFor="service-input" className="sr-only">
+                Service type
+              </label>
               <input
                 id="service-input"
                 type="text"
@@ -138,8 +143,13 @@ function Home() {
               />
             </div>
             <div className="flex-1 flex items-center gap-3 px-4">
-              <MapPin className="text-cyan-500 h-6 w-6 shrink-0" aria-hidden="true" />
-              <label htmlFor="location-input" className="sr-only">Location</label>
+              <MapPin
+                className="text-cyan-500 h-6 w-6 shrink-0"
+                aria-hidden="true"
+              />
+              <label htmlFor="location-input" className="sr-only">
+                Location
+              </label>
               <input
                 id="location-input"
                 type="text"
@@ -163,18 +173,31 @@ function Home() {
 
       {/* Live Search Results Section */}
       {(service.trim() || location.trim()) && (
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-b border-gray-200" aria-label="Search results">
+        <section
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-b border-gray-200"
+          aria-label="Search results"
+        >
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-3xl font-bold text-gray-900">
               Search Results
               {searchResults.length > 0 && (
-                <span className="text-lg text-gray-500 ml-3" role="status" aria-live="polite">
-                  ({searchResults.length} provider{searchResults.length !== 1 ? 's' : ''} found)
+                <span
+                  className="text-lg text-gray-500 ml-3"
+                  role="status"
+                  aria-live="polite"
+                >
+                  ({searchResults.length} provider
+                  {searchResults.length !== 1 ? "s" : ""} found)
                 </span>
               )}
             </h2>
             {loadingSearch && (
-              <div className="flex items-center gap-2 text-cyan-600" role="status" aria-live="polite" aria-label="Searching for providers">
+              <div
+                className="flex items-center gap-2 text-cyan-600"
+                role="status"
+                aria-live="polite"
+                aria-label="Searching for providers"
+              >
                 <Loader className="h-5 w-5 animate-spin" aria-hidden="true" />
                 <span className="text-sm font-medium">Searching...</span>
               </div>
@@ -199,14 +222,18 @@ function Home() {
                   className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-1 border border-gray-100 focus-within:ring-2 focus-within:ring-cyan-500"
                   onClick={() => navigate(`/provider/${provider.provider_id}`)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
                       navigate(`/provider/${provider.provider_id}`);
                     }
                   }}
                   role="button"
                   tabIndex={0}
-                  aria-label={`View profile of ${provider.user?.name || 'Service Provider'}, ${provider.services?.join(', ') || 'General Services'}, rated ${provider.rating?.toFixed(1) || '0.0'} stars`}
+                  aria-label={`View profile of ${
+                    provider.user?.name || "Service Provider"
+                  }, ${
+                    provider.services?.join(", ") || "General Services"
+                  }, rated ${provider.rating?.toFixed(1) || "0.0"} stars`}
                 >
                   <div className="p-6">
                     <div className="flex items-start gap-3 mb-4">
@@ -251,8 +278,14 @@ function Home() {
       )}
 
       {/* Popular Services Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20" aria-labelledby="popular-services-heading">
-        <h2 id="popular-services-heading" className="text-5xl font-bold text-center mb-4 bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+      <section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
+        aria-labelledby="popular-services-heading"
+      >
+        <h2
+          id="popular-services-heading"
+          className="text-5xl font-bold text-center mb-4 bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent"
+        >
           Popular Services
         </h2>
         <p className="text-center text-gray-600 mb-12 text-lg">
@@ -269,7 +302,7 @@ function Home() {
                 role="button"
                 aria-label={`${service.name} service`}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     // Could navigate to service-specific page
                   }
@@ -288,8 +321,14 @@ function Home() {
       </section>
 
       {/* Top Rated Professionals Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20" aria-labelledby="top-providers-heading">
-        <h2 id="top-providers-heading" className="text-5xl font-bold text-center mb-4 bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+      <section
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20"
+        aria-labelledby="top-providers-heading"
+      >
+        <h2
+          id="top-providers-heading"
+          className="text-5xl font-bold text-center mb-4 bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent"
+        >
           Top Rated Professionals
         </h2>
         <p className="text-center text-gray-600 mb-12 text-lg">
@@ -297,8 +336,16 @@ function Home() {
         </p>
 
         {loadingProviders ? (
-          <div className="flex justify-center items-center py-20" role="status" aria-live="polite" aria-label="Loading top rated providers">
-            <Loader className="h-12 w-12 text-cyan-600 animate-spin" aria-hidden="true" />
+          <div
+            className="flex justify-center items-center py-20"
+            role="status"
+            aria-live="polite"
+            aria-label="Loading top rated providers"
+          >
+            <Loader
+              className="h-12 w-12 text-cyan-600 animate-spin"
+              aria-hidden="true"
+            />
             <span className="sr-only">Loading top rated providers...</span>
           </div>
         ) : topProviders.length === 0 ? (
@@ -315,14 +362,18 @@ function Home() {
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden cursor-pointer transform hover:-translate-y-2 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                 onClick={() => navigate(`/provider/${provider.provider_id}`)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     navigate(`/provider/${provider.provider_id}`);
                   }
                 }}
                 role="button"
                 tabIndex={0}
-                aria-label={`View profile of ${provider.user?.name || 'Service Provider'}, ${provider.services?.join(', ') || 'General Services'}, rated ${provider.rating?.toFixed(1) || '0.0'} stars`}
+                aria-label={`View profile of ${
+                  provider.user?.name || "Service Provider"
+                }, ${
+                  provider.services?.join(", ") || "General Services"
+                }, rated ${provider.rating?.toFixed(1) || "0.0"} stars`}
               >
                 <div className="p-8">
                   <div className="flex items-center gap-4 mb-4">
@@ -381,4 +432,3 @@ function Home() {
 }
 
 export default Home;
-

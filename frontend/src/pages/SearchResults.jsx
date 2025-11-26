@@ -315,9 +315,9 @@ function SearchResults() {
                   onClick={() => navigate(`/provider/${provider.provider_id}`)}
                 >
                   <div className="p-8 flex flex-col md:flex-row gap-6">
-                  <div className="shrink-0">
-                    <div className="w-full md:w-56 h-56 rounded-xl ring-4 ring-cyan-100 shadow-md bg-linear-to-br from-cyan-100 to-blue-100 flex items-center justify-center">
-                      <span className="text-6xl">👨‍🔧</span>
+                    <div className="shrink-0">
+                      <div className="w-full md:w-56 h-56 rounded-xl ring-4 ring-cyan-100 shadow-md bg-linear-to-br from-cyan-100 to-blue-100 flex items-center justify-center">
+                        <span className="text-6xl">👨‍🔧</span>
                       </div>
                     </div>
 
@@ -343,10 +343,10 @@ function SearchResults() {
                               </span>
                             )}
                           </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-3xl font-bold bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                          ₹{provider.pricing}/hr
+                        </div>
+                        <div className="text-right">
+                          <div className="text-3xl font-bold bg-linear-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                            ₹{provider.pricing}/hr
                           </div>
                         </div>
                       </div>
@@ -377,11 +377,11 @@ function SearchResults() {
                           <span className="font-bold text-gray-900 text-lg">
                             {provider.rating?.toFixed(1) || "0.0"}
                           </span>
-                        <span className="text-gray-500">
-                          ({provider.rating_count || 0} reviews)
-                        </span>
-                      </div>
-                      <button className="bg-linear-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
+                          <span className="text-gray-500">
+                            ({provider.rating_count || 0} reviews)
+                          </span>
+                        </div>
+                        <button className="bg-linear-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-bold transition-all duration-200 shadow-md hover:shadow-lg transform hover:scale-105">
                           View Profile
                         </button>
                       </div>
@@ -398,4 +398,3 @@ function SearchResults() {
 }
 
 export default SearchResults;
-

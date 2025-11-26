@@ -54,6 +54,7 @@ Start Command: python scripts/render_startup.py && uvicorn app.main:app --host 0
 Add these environment variables in Render dashboard:
 
 #### Required Variables:
+
 ```env
 # Database (Auto-configured if using Render PostgreSQL)
 DATABASE_URL=postgresql://user:password@host:port/database
@@ -73,6 +74,7 @@ REDIS_URL=redis://localhost:6379/0
 ```
 
 #### Optional Variables (Add later):
+
 ```env
 # Payment Gateways
 RAZORPAY_KEY_ID=rzp_live_your_key
@@ -115,15 +117,18 @@ SENTRY_DSN=your_sentry_dsn
 After deployment, you need to run migrations:
 
 #### Option A: Using Render Shell
+
 1. Go to your web service in Render dashboard
 2. Click **"Shell"** tab
 3. Run:
+
 ```bash
 cd backend
 alembic upgrade head
 ```
 
 #### Option B: Using render_startup.py (Automatic)
+
 The `scripts/render_startup.py` already handles migrations automatically on startup.
 
 ---
@@ -139,14 +144,14 @@ databases:
   - name: homehero-db
     databaseName: homehero_db
     user: homehero_user
-    plan: free  # or starter/standard
+    plan: free # or starter/standard
 
 services:
   - type: web
     name: homehero-backend
     env: python
     region: singapore
-    plan: free  # or starter/standard
+    plan: free # or starter/standard
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python scripts/render_startup.py && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
     envVars:
@@ -184,6 +189,7 @@ services:
 ### 1. Verify Deployment
 
 Check your backend is running:
+
 ```bash
 curl https://your-app-name.onrender.com/
 # Should return: {"message": "HomeHero API is running! 🔥", ...}
@@ -201,6 +207,7 @@ This opens the interactive Swagger UI where you can test all endpoints.
 ### 3. Run Migrations
 
 If not run automatically:
+
 ```bash
 # In Render Shell
 alembic upgrade head
@@ -209,6 +216,7 @@ alembic upgrade head
 ### 4. Create Initial Data (Optional)
 
 If you want dummy data for testing:
+
 ```bash
 # In Render Shell
 python scripts/create_dummy_data.py
@@ -217,6 +225,7 @@ python scripts/create_dummy_data.py
 ### 5. Update Frontend API URL
 
 Update your frontend `.env` file:
+
 ```env
 VITE_API_URL=https://your-app-name.onrender.com/api
 ```
@@ -235,6 +244,7 @@ VITE_API_URL=https://your-app-name.onrender.com/api
 ### Manual Deploy
 
 Trigger manual deployment:
+
 1. Go to Render dashboard → Your service
 2. Click **"Manual Deploy"** → **"Deploy latest commit"**
 
@@ -262,13 +272,17 @@ If this endpoint fails, Render will restart your service.
 ## ⚠️ Common Issues & Solutions
 
 ### Issue 1: Database Connection Failed
-**Solution**: 
+
+**Solution**:
+
 - Verify `DATABASE_URL` is set correctly
 - Ensure PostgreSQL database is in the same region
 - Check database credentials
 
 ### Issue 2: Migration Errors
+
 **Solution**:
+
 ```bash
 # In Render Shell
 cd backend
@@ -279,19 +293,25 @@ alembic upgrade head  # Apply all migrations
 ```
 
 ### Issue 3: Import Errors
+
 **Solution**:
+
 - Ensure all dependencies are in `requirements.txt`
 - Check Python version matches (3.11)
 - Rebuild the service
 
 ### Issue 4: Port Binding Error
+
 **Solution**:
+
 - Ensure start command uses `--port $PORT`
 - Render automatically sets the `PORT` environment variable
 
 ### Issue 5: CORS Errors from Frontend
+
 **Solution**:
 Update `backend/app/main.py`:
+
 ```python
 app.add_middleware(
     CORSMiddleware,
@@ -325,6 +345,7 @@ Before going live:
 ## 📝 Quick Commands Reference
 
 ### Check Deployment Status
+
 ```bash
 # View service info
 render services list
@@ -337,6 +358,7 @@ render shell <service-name>
 ```
 
 ### Database Commands
+
 ```bash
 # Connect to database
 render psql <database-name>
@@ -358,6 +380,7 @@ alembic downgrade -1
 After backend is deployed, update frontend:
 
 ### Update API URL
+
 ```env
 # frontend/.env.production
 VITE_API_URL=https://your-backend-app.onrender.com/api
@@ -365,12 +388,14 @@ VITE_RAZORPAY_KEY_ID=rzp_live_your_key
 ```
 
 ### Deploy to Vercel
+
 ```bash
 cd frontend
 vercel --prod
 ```
 
 ### Deploy to Netlify
+
 ```bash
 cd frontend
 netlify deploy --prod
@@ -389,16 +414,19 @@ netlify deploy --prod
 ## 🎯 Next Steps After Deployment
 
 1. **Set up domain** (optional):
+
    - Add custom domain in Render settings
    - Update DNS records
    - Enable SSL (automatic with Render)
 
 2. **Configure monitoring**:
+
    - Set up Sentry for error tracking
    - Enable uptime monitoring (UptimeRobot, Pingdom)
    - Set up log aggregation (Papertrail, Logtail)
 
 3. **Performance optimization**:
+
    - Enable Redis for caching
    - Configure CDN for static files
    - Optimize database queries

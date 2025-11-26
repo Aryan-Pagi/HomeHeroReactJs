@@ -29,7 +29,12 @@ sentry_sdk.init(
 async def lifespan(app: FastAPI):
     # startup
     logger.info("Starting HomeHero API", environment=settings.ENVIRONMENT)
-    Base.metadata.create_all(bind=engine)
+    
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables created/verified")
+    except Exception as e:
+        logger.warning("⚠️ Database initialization skipped", error=str(e))
 
     try:
         from app.services.cache import cache

@@ -21,20 +21,27 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100" aria-label="Main navigation">
+    <nav
+      className="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100"
+      aria-label="Main navigation"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div
             onClick={handleLogoClick}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
+              if (e.key === "Enter" || e.key === " ") {
                 e.preventDefault();
                 handleLogoClick();
               }
             }}
             role="button"
             tabIndex={0}
-            aria-label={isAuthenticated && user?.user_type === "provider" ? "Go to provider dashboard" : "Go to homepage"}
+            aria-label={
+              isAuthenticated && user?.user_type === "provider"
+                ? "Go to provider dashboard"
+                : "Go to homepage"
+            }
             className="flex items-center space-x-2 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2 rounded-lg"
           >
             <div className="bg-linear-to-br from-cyan-500 to-cyan-600 p-2 rounded-lg shadow-md group-hover:shadow-lg transition-all duration-200">
@@ -54,7 +61,10 @@ function Navbar() {
                 aria-label="Navigate to home page"
               >
                 Home
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 transition-all duration-200 group-hover:w-full" aria-hidden="true"></span>
+                <span
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 transition-all duration-200 group-hover:w-full"
+                  aria-hidden="true"
+                ></span>
               </Link>
             )}
 
@@ -65,7 +75,10 @@ function Navbar() {
                 aria-label="View my bookings"
               >
                 My Bookings
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 transition-all duration-200 group-hover:w-full" aria-hidden="true"></span>
+                <span
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 transition-all duration-200 group-hover:w-full"
+                  aria-hidden="true"
+                ></span>
               </Link>
             )}
 
@@ -76,19 +89,29 @@ function Navbar() {
                 aria-label="Go to provider dashboard"
               >
                 Dashboard
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 transition-all duration-200 group-hover:w-full" aria-hidden="true"></span>
+                <span
+                  className="absolute bottom-0 left-0 w-0 h-0.5 bg-cyan-600 transition-all duration-200 group-hover:w-full"
+                  aria-hidden="true"
+                ></span>
               </Link>
             )}
 
             {isAuthenticated ? (
               <>
                 <NotificationBell />
-                <div className="flex items-center gap-3 px-4 py-2 bg-cyan-50 rounded-lg" role="status" aria-label={`Logged in as ${user?.name}, ${user?.user_type}`}>
+                <div
+                  className="flex items-center gap-3 px-4 py-2 bg-cyan-50 rounded-lg"
+                  role="status"
+                  aria-label={`Logged in as ${user?.name}, ${user?.user_type}`}
+                >
                   <User className="h-5 w-5 text-cyan-600" aria-hidden="true" />
                   <span className="font-medium text-gray-700">
                     {user?.name}
                   </span>
-                  <span className="text-xs text-cyan-600 bg-cyan-100 px-2 py-1 rounded" aria-label="User type">
+                  <span
+                    className="text-xs text-cyan-600 bg-cyan-100 px-2 py-1 rounded"
+                    aria-label="User type"
+                  >
                     {user?.user_type}
                   </span>
                 </div>
@@ -127,4 +150,3 @@ function Navbar() {
 }
 
 export default Navbar;
-

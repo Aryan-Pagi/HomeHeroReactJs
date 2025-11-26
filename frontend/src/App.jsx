@@ -26,31 +26,37 @@ function App() {
       <AuthProvider>
         <NotificationProvider>
           <Router>
-          <SkipToMain />
-          <div className="min-h-screen bg-linear-to-br from-cyan-50 via-blue-50 to-indigo-50">
-            <Navbar />
-            {/* Suspense boundary for lazy-loaded routes */}
-            <Suspense fallback={<RouteLoader />}>
-              <div id="main-content">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/search" element={<SearchResults />} />
-                <Route path="/my-bookings" element={<MyBookings />} />
-                <Route path="/provider-dashboard" element={<ProviderDashboard />} />
-                <Route
-                  path="/provider-verification"
-                  element={<ProviderVerification />}
-                />
-                <Route path="/provider/:id" element={<ProviderProfile />} />
-                <Route path="/review/:bookingId" element={<SubmitReview />} />
-              </Routes>
-              </div>
-            </Suspense>
-            <Footer />
-          </div>
-        </Router>
+            <SkipToMain />
+            <div className="min-h-screen bg-linear-to-br from-cyan-50 via-blue-50 to-indigo-50">
+              <Navbar />
+              {/* Suspense boundary for lazy-loaded routes */}
+              <Suspense fallback={<RouteLoader />}>
+                <div id="main-content">
+                  <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/search" element={<SearchResults />} />
+                    <Route path="/my-bookings" element={<MyBookings />} />
+                    <Route
+                      path="/provider-dashboard"
+                      element={<ProviderDashboard />}
+                    />
+                    <Route
+                      path="/provider-verification"
+                      element={<ProviderVerification />}
+                    />
+                    <Route path="/provider/:id" element={<ProviderProfile />} />
+                    <Route
+                      path="/review/:bookingId"
+                      element={<SubmitReview />}
+                    />
+                  </Routes>
+                </div>
+              </Suspense>
+              <Footer />
+            </div>
+          </Router>
         </NotificationProvider>
       </AuthProvider>
     </ErrorBoundary>
@@ -58,4 +64,3 @@ function App() {
 }
 
 export default App;
-
