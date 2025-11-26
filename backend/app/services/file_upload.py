@@ -11,25 +11,31 @@ from app.core.config import settings
 # handle file uploads using cloudinary
 class FileUploadService:
     def __init__(self):
-        if not all(
+        self.enabled = all(
             [
                 settings.CLOUDINARY_CLOUD_NAME,
                 settings.CLOUDINARY_API_KEY,
                 settings.CLOUDINARY_API_SECRET,
             ]
-        ):
-            raise ValueError("Cloudinary credentials not configured")
-
-        cloudinary.config(
-            cloud_name=settings.CLOUDINARY_CLOUD_NAME,
-            api_key=settings.CLOUDINARY_API_KEY,
-            api_secret=settings.CLOUDINARY_API_SECRET,
         )
+        
+        if self.enabled:
+            cloudinary.config(
+                cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+                api_key=settings.CLOUDINARY_API_KEY,
+                api_secret=settings.CLOUDINARY_API_SECRET,
+            )
 
     # upload file image to cloudinary
     async def upload_image(
         self, file: UploadFile, folder: str = "homehero", max_size_mb: int = 5
     ) -> dict:
+        if not self.enabled:
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="File upload service not configured",
+            )
+        
         # validate file
         if not file.content_type or not file.content_type.startswith("image/"):
             raise HTTPException(
