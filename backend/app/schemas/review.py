@@ -12,6 +12,10 @@ class ReviewBase(BaseModel):
     
 class ReviewCreate(ReviewBase):
     booking_id: UUID
+
+class ReviewUpdate(BaseModel):
+    rating: float
+    comment: Optional[str] = None
     
 class ReviewResponse(ReviewBase):
     review_id: UUID
